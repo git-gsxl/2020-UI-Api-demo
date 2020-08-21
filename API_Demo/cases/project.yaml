@@ -1,0 +1,26 @@
+# todo 正常登录
+- url: /api/login/
+  data: account=admin&password=123456
+  headers: {Content-Type: application/x-www-form-urlencoded}
+  validators:
+    - {"check": "status_code", "selector": "=", "exp": "200"}
+    - {"check": "text", "selector": "in", "exp": "欢迎您：admin"}
+    - {"check": "text", "selector": "in", "exp": "注 销"}
+
+# todo 获取id，提供删除
+- url: /api/project_list/1/
+  method: get
+  xpath:
+    - {"re":{"num_id":"edit\\('(.+?)',"}}
+  validators:
+    - {"check": "status_code", "selector": "=", "exp": "200"}
+    - {"check": "text", "selector": "in", "exp": "项目名称"}
+    - {"check": "text", "selector": "in", "exp": "负责人"}
+
+# todo 删除项目
+- url: /api/project_list/1/
+  headers: {X-Requested-With: XMLHttpRequest}
+  json: {"id": "${num_id}", "mode": "del"}
+  validators:
+    - {"check": "status_code", "selector": "=", "exp": "200"}
+    - {"check": "text", "selector": "=", "exp": "ok"}

@@ -1,0 +1,12 @@
+
+
+host: http://47.97.194.84:8000
+#host: http://192.168.1.103:8000
+
+
+Mysql:
+  host: 47.97.194.84
+  port: 3306
+  user: root
+  pwd: 123456
+  dbname: hrun

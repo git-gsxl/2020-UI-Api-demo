@@ -1,0 +1,48 @@
+# todo 该用户名已被注册
+- url: /api/register/
+  headers: {X-Requested-With: XMLHttpRequest}
+  json: {"account":"admin","email":"PPL{email}","password":"123456","repassword":"123456"}
+  validators:
+    - {"check": "status_code", "selector": "=", "exp": "200"}
+    - {"check": "text", "selector": "in", "exp": "该用户名已被注册，请更换用户名"}
+
+# todo 邮箱已被其他用户注册
+- url: /api/register/
+  headers: {X-Requested-With: XMLHttpRequest}
+  json: {"account":"gsxl1111","email":"admin@qq.com","password":"123456","repassword":"123456"}
+  validators:
+    - {"check": "status_code", "selector": "=", "exp": "200"}
+    - {"check": "text", "selector": "in", "exp": "邮箱已被其他用户注册，请更换邮箱"}
+
+# todo 注册成功
+- url: /api/register/
+  headers: {X-Requested-With: XMLHttpRequest}
+  json: {"account":"gsxl11","email":"ppl{email}","password":"123456","repassword":"123456"}
+  validators:
+    - {"check": "status_code", "selector": "=", "exp": "200"}
+    - {"check": "text", "selector": "in", "exp": "恭喜您，账号已成功注册"}
+
+# todo 错误登录
+- url: /api/login/
+  data: account=ppl{ssn}&password=ppl{ssn}
+  headers: {Content-Type: application/x-www-form-urlencoded}
+  validators:
+    - {"check": "status_code", "selector": "=", "exp": "200"}
+    - {"check": "text", "selector": "in", "exp": "请输入用户名"}
+
+# todo 错误登录
+- url: /api/login/
+  data: account=ppl{phone_number}&password=ppl{phone_number}
+  headers: {Content-Type: application/x-www-form-urlencoded}
+  validators:
+    - {"check": "status_code", "selector": "=", "exp": "200"}
+    - {"check": "text", "selector": "in", "exp": "请输入用户名"}
+
+# todo 正常登录
+- url: /api/login/
+  data: account=admin&password=123456
+  headers: {Content-Type: application/x-www-form-urlencoded}
+  validators:
+    - {"check": "status_code", "selector": "=", "exp": "200"}
+    - {"check": "text", "selector": "in", "exp": "欢迎您：admin"}
+    - {"check": "text", "selector": "in", "exp": "注 销"}
