@@ -1,0 +1,33 @@
+# todo 默认元素定位方法
+default: xpath
+#default: css selector
+
+# todo test:
+host: http://47.97.194.84:8000
+#host: http://192.168.1.103:8000
+
+
+# todo Windows配置UI_mode：默认是1，表示界面模式，0表示无界面模式；
+# todo Windows配置max_window：默认是0，0表示最大窗口，1表示小窗口
+win_UI_mode:
+  UI_mode: 1
+  max_window: 1
+
+# todo mode：docker-selenium模式，0表示关闭，1表示开启；(默认开启，因持续集成在服务器)
+# todo host_port：docker-selenium，填写宿主的ip + port （主机+端口）
+docker-selenium:
+  mode: 1
+  host_port: http://47.97.194.84:4444
+
+# todo 开启后为1，默认直接调远程docker-selenium,调不通不知为何
+remote_mode: 0
+
+# todo 远程docker-selenium运行时所使用的的浏览器
+browser: chrome
+
+Mysql:
+  host: 47.97.194.84
+  port: 3306
+  user: root
+  pwd: 123456
+  dbname: hrun
