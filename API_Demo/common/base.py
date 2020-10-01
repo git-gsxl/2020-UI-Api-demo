@@ -2,6 +2,7 @@
 import yaml
 import os
 import time
+import base64
 import logging
 import requests
 from faker import Faker
@@ -131,3 +132,52 @@ class Api:
                 assert str(exp) not in str(result_res)
             else:
                 logging.error("selector 格式错误,请使用eq/in/len等方式进行")
+
+
+def img_decode(url_data: dict, re_path, dic_words='words', save_img=False):
+    """
+    :param url_data: 接口所有的请求信息，dict格式编写；
+    :param re_path: re正则语法，匹配图片，例如：re_path='"data:image/jpeg;base64,(.+?)"'
+    :param dic_words: 百度解析json_path语法，默认words；
+    :return:img_decode：返回解析验证码字符串，如：4GbB
+    """
+    # todo 获取百度ai的access_token
+    token_url = 'https://aip.baidubce.com' \
+                '/oauth/2.0/token?grant_type=client_credentials&' \
+                'client_id=GOMMIBuWOO8oWNfOI9fRjjHV&client_secret=VplG3PsATgoDww7MMzzdf3cB4GA1p6CN'
+    response = requests.get(token_url)
+    access_token = response.json().get('access_token')
+
+    # todo 获取接口的图片并转为base64值
+    img = None
+    response = requests.request(**url_data)
+    if response:
+        img = re.findall(re_path, response.text)[0]
+
+    if img is None:
+        return "re：正则获取接口的图片失败！"
+    else:
+        # todo 把图片base64值发给百度识别
+        params = {'image': img}
+        url = 'https://aip.baidubce.com/rest/2.0/ocr/v1/accurate_basic?access_token=%s' % access_token
+        response = requests.post(url, data=params)
+        words = None
+        if response:
+            result = response.json()
+            words = jsonpath(result, '$..%s' % dic_words)[0]     # todo 最终识别出来的字符
+            if save_img:
+                filename = words + '.png'                        # todo 将识别的字符保存在本地
+                with open(filename, 'wb') as f:
+                    f.write(base64.b64decode(img))
+        return words
+
+
+if __name__ == '__main__':
+    dic = {
+        'method': 'post',
+        'url': 'https://xxxxx/code',
+        'headers': {'content-type': 'application/x-www-form-urlencoded'},
+        'data': {'code': 'img'}
+    }
+    rePath = '"data:image/jpeg;base64,(.+?)"'
+    print(img_decode(dic, rePath))
